@@ -13,8 +13,19 @@ namespace index
 
         static void Main(string[] args)
         {
-          Menu.Criar();
-                  
+            //Menu.Criar();
+            Usuario u = new Usuario();
+            u.Nome = "green";
+            u.Telefone = "55555";
+            u.CPF = "645454";
+            u.Gravar();
+
+            foreach (Usuario us in Usuario.LerUsuarios())
+            {
+                Console.WriteLine(us.Nome);
+                Console.WriteLine(us.Telefone);
+                Console.WriteLine(us.CPF);
+            }
         }
 
 
