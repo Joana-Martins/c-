@@ -13,19 +13,8 @@ namespace index
 
         static void Main(string[] args)
         {
-            //Menu.Criar();
-            
-            var clientes = Cliente.LerClientes();
-            var cliente = new Cliente();
-            cliente.Nome = "laila";
-            cliente.Telefone = "27981089213";
-            cliente.CPF = "78985245623";
-            cliente.Gravar();
-            
-            foreach(Cliente c in clientes)
-            {
-                Console.WriteLine(c.Nome);
-            }
+          Menu.Criar();
+                  
         }
 
 

@@ -21,8 +21,7 @@ namespace Classes
             this.Telefone = telefone;
             this.CPF = cpf;
         }
-
-      
+        
 
 
         /// <summary>
@@ -37,6 +36,11 @@ namespace Classes
         private static string caminhoBaseClientes()
         {
             return ConfigurationManager.AppSettings["BaseDeClientes"];
+        }
+
+        private static string caminhoBaseUsuarios()
+        {
+            return ConfigurationManager.AppSettings["BaseDeUsuarios"];
         }
 
         public static List<Cliente> LerClientes()
@@ -66,24 +70,80 @@ namespace Classes
             return clientes;
         }
 
+        public static List<Usuario> LerUsuarios()
+        {
+            var usuarios = new List<Usuario>();
+            string arquivoComCaminhoUsuario = caminhoBaseUsuarios();
+
+            if (File.Exists(arquivoComCaminhoUsuario))
+            {
+                using (StreamReader arquivo = File.OpenText(arquivoComCaminhoUsuario))
+                {
+                    string linha;
+                    int i = 0;
+                    while ((linha = arquivo.ReadLine()) != null)
+                    {
+                        i++;
+                        if (i == 1) continue;
+                        var UsuarioArquivo = linha.Split(";");
+
+                        var usuario = new Usuario(UsuarioArquivo[0], UsuarioArquivo[1], UsuarioArquivo[2]);
+
+                        usuarios.Add(usuario);
+                    }
+                }
+            }
+
+            return usuarios;
+        }
+
         public void Gravar()
         {
-            var clientes = Cliente.LerClientes();
-            clientes.Add(this);
-            string arquivoComCaminho = caminhoBaseClientes();
-
-            if (File.Exists(arquivoComCaminho))
+            if (this.GetType() == typeof(Cliente))
             {
-                string conteudo = "nome;telefone;cpf\n";
 
-                foreach(Cliente c in clientes)
+                var clientes = Cliente.LerClientes();
+                clientes.Add(this);
+                string arquivoComCaminho = caminhoBaseClientes();
+
+                if (File.Exists(arquivoComCaminho))
                 {
-                    conteudo += c.Nome + ";" + c.Telefone + ";" + c.CPF + ";\n";
-                }    
+                    string conteudo = "nome;telefone;cpf\n";
 
-                File.WriteAllText(arquivoComCaminho, conteudo);
+                    foreach (Cliente c in clientes)
+                    {
+                        conteudo += c.Nome + ";" + c.Telefone + ";" + c.CPF + ";\n";
+                    }
 
+                    File.WriteAllText(arquivoComCaminho, conteudo);
+
+                }
             }
+            else
+            {
+                var usuarios = Usuario.LerUsuarios();
+                Usuario u = new Usuario(this.Nome, this.Telefone, this.CPF);
+                usuarios.Add(u);
+                string arquivoComCaminhoUsuario = caminhoBaseUsuarios();
+
+                if (File.Exists(arquivoComCaminhoUsuario))
+                {
+                    string conteudo = "nome;telefone;cpf\n";
+
+                    foreach (Usuario c in usuarios)
+                    {
+                        conteudo += c.Nome + ";" + c.Telefone + ";" + c.CPF + ";\n";
+                    }
+
+                    File.WriteAllText(arquivoComCaminhoUsuario, conteudo);
+
+                }
+            }
+        }
+
+        private void Olhar()
+        {
+            Console.WriteLine("O cleinte " + this.Nome + "esta olhando para mim");
         }
     }
 }
